@@ -4,16 +4,15 @@ import AssignCar from "./AssignCar";
 import AddDriver from "./AddDriver";
 
 
-const DisplayDriver = (props) => {
-        
-        const {drivers,refreshHandler} = props
+const DisplayDriver = (props) => { 
+        const {drivers,refreshHandler,encodedToken} = props
 
         const [turn,setTurn] = useState(1);
         const [cars,setCars] = useState([])
         const [driverId,setDriveId] = useState(null)
 
         const removeDriver = (id) => {
-            axios.delete(`http://localhost:8080/removeDriver/${id}`)
+            axios.delete(`http://localhost:8080/removeDriver/${id}`,{headers:{Authorization:encodedToken}})
             .then(res => refreshHandler())
             .catch(err => console.log(err))
         }
@@ -88,9 +87,9 @@ const DisplayDriver = (props) => {
                 <button onClick={() =>setTurn(1)}>Go Back</button>
                 </>
                 }
-                {turn === 3 && <AssignCar driverId={driverId} setTurn={setTurn} refreshHandler={refreshHandler}/>
+                {turn === 3 && <AssignCar driverId={driverId} setTurn={setTurn} refreshHandler={refreshHandler} encodedToken={encodedToken}/>
                 }
-                {turn === 4 && <AddDriver setTurn={setTurn}  refreshHandler={refreshHandler}/>}
+                {turn === 4 && <AddDriver setTurn={setTurn}  refreshHandler={refreshHandler} encodedToken={encodedToken}/>}
             </div>
         )
 }

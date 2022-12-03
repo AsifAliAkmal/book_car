@@ -1,10 +1,9 @@
 import axios from "axios"
 
 const ShowCar = (props) => {
-    const {cars,refreshHandler,setTurn} = props
-
+    const {cars,refreshHandler,setTurn,encodedToken} = props
     const removeCar = (carId) =>{
-            axios.delete(`http://localhost:8080/removeCar/${carId}`)
+            axios.delete(`http://localhost:8080/removeCar/${carId}`, {headers:{Authorization:encodedToken}})
             .then((res) => refreshHandler())
             .catch(err => console.log(err))
     }

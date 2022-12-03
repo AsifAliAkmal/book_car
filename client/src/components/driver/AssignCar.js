@@ -2,13 +2,13 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 
 const AssignCar = (props) => {
-    const {driverId,setTurn,refreshHandler} = props;
+    const {driverId,setTurn,refreshHandler,encodedToken} = props;
     const [cars,setCars] = useState([])
 
     useEffect(() => getCars(),[])
 
     const getCars = ()=>{
-        axios.get("http://localhost:8080/cars")
+        axios.get("http://localhost:8080/cars",{headers:{Authorization:encodedToken}})
         .then((res) => setCars(res.data))
         .catch((err) => console.log(err))
     }
@@ -23,10 +23,9 @@ const AssignCar = (props) => {
                 </tr>
             )
     }
-
-
+    
     const assignCar = (carId) =>{
-        axios.put(`http://localhost:8080/assignDriver/${driverId}/car/${carId}`)
+        axios.put(`http://localhost:8080/assignDriver/${driverId}/car/${carId}`,{},{headers:{Authorization:encodedToken}})
         .then((res) => {setTurn(1); refreshHandler()})
         .catch((err) => console.log(err))
     }

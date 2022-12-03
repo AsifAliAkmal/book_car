@@ -2,7 +2,7 @@ import axios from "axios"
 import { useState } from "react"
 
 const AddCar = (props) => {
-    const {refreshHandler,setTurn} = props
+    const {refreshHandler,setTurn,encodedToken} = props
 
     const [carNumber,setCarNumber] = useState(null)
     const [capacity,setCapacity] = useState(null)
@@ -23,8 +23,7 @@ const AddCar = (props) => {
                 "capacity":capacity,
                 "is_booked":false
             }
-
-            axios.post("http://localhost:8080/addCar",payLoad)
+            axios.post("http://localhost:8080/addCar",payLoad, {headers:{Authorization:encodedToken}})
             .then(res=>{refreshHandler();setTurn(1)})
             .catch(err =>console.log(err))
     }

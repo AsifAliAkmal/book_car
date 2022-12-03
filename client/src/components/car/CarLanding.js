@@ -7,10 +7,11 @@ import AddCar from "./AddCar"
 
 
 const CarLanding = () => {
-
     const [cars, setCars] = useState([])
     const [refresh, setRefresh] = useState(false)
     const [turn, setTurn] = useState(1)
+
+    const encodedToken = window.localStorage.getItem("Token")
 
     const refreshHandler = () => {
         setRefresh(!refresh)
@@ -19,7 +20,7 @@ const CarLanding = () => {
     useEffect(() => getAllCar(), [refresh])
 
     const getAllCar = () => {
-        axios.get("http://localhost:8080/cars")
+        axios.get("http://localhost:8080/cars", {headers:{Authorization:encodedToken}})
             .then((res) => setCars(res.data))
             .catch(err => console.log(err))
     }
@@ -39,10 +40,10 @@ const CarLanding = () => {
 
             }
             {turn === 2 &&
-                <ShowCar cars={cars} refreshHandler={refreshHandler} setTurn={setTurn} />
+                <ShowCar cars={cars} refreshHandler={refreshHandler} setTurn={setTurn} encodedToken={encodedToken}/>
             }
             {turn === 3 &&
-                <AddCar refreshHandler={refreshHandler} setTurn={setTurn} />
+                <AddCar refreshHandler={refreshHandler} setTurn={setTurn} encodedToken={encodedToken}/>
             }
             <div>
                         <button>

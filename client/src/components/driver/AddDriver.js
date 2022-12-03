@@ -3,7 +3,7 @@ import { useState } from "react"
 
 
 const AddDriver = (props) =>{
-    const {setTurn,refreshHandler} = props
+    const {setTurn,refreshHandler,encodedToken} = props
     const [name,setName] = useState(null)
     const [number,setNumber] = useState(null)
     const [error,setError] = useState(null)
@@ -25,12 +25,10 @@ const AddDriver = (props) =>{
                 "phone_number":number
             }
 
-            axios.post("http://localhost:8080/addDriver",payLoad)
+            axios.post("http://localhost:8080/addDriver",payLoad,{headers:{Authorization:encodedToken}})
             .then((res) => {setTurn(1); refreshHandler()})
             .catch((err) => setError(err))
     }
-
-
 
     return (
         <div>

@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from 'react';
-import { GoogleLogin, GoogleLogout } from 'react-google-login';
+import { GoogleLogin } from 'react-google-login';
 import { gapi } from "gapi-script";
 import { Navigate } from 'react-router-dom';
 import axios from 'axios';
 
+import './form.scss'
+
 
 function Login() {
-    const [user, setUser] = useState(null)
+    const [userId, setUserId] = useState(null)
     const [flag, setFlag] = useState(false)
     const [turn, setTurn] = useState(1)
 
@@ -19,33 +21,41 @@ function Login() {
     }, [])
 
     const onLoginSuccess = (res) => {
-        axios.get(`http://localhost:8080/login/${res.profileObj.email}`)
+        const profile = res.profileObj;
+        var encodedToken ="Basic " + window.btoa(profile.email+':'+profile.email).toString();
+            axios.get("http://localhost:8080/user",
+                {headers:{Authorization:encodedToken}}
+              )
             .then((res) => {
-                setUser(res.data)
-                if (!user)
-                    setFlag(true)
-            })
-            .catch(err => console.log(err))
+                                setUserId(res.data.id)
+                                window.localStorage.setItem("Token",res.headers.authorization)
+                                window.localStorage.setItem("Role",res.data.role)
+                                if(!userId)
+                                    setFlag(true)
+                            })
+            .catch((err) => console.log(err))
+            window.localStorage.setItem("basicToken",encodedToken)
     };
-    if (user) {
+    if (userId) {
         window.localStorage.setItem("isLoggedIn", true)
-        window.localStorage.setItem("user", JSON.stringify(user))
+        window.localStorage.setItem("userId", userId)
         return <Navigate to="/dashboard" />
     }
 
     const onLoginFailure = (res) => {
-        console.log('Login Failed:', res);
+        console.log(res.profileObj)
     };
 
     const onSignupSuccess = (res) => {
-        const payLoad = {
-            "name": res.profileObj.name,
-            "email": res.profileObj.email,
-            "password": res.profileObj.name,
-            "role": "user"
-        }
+            const profile = res.profileObj
+            const payLoad = {
+                "name":profile.name,
+                "email":profile.email,
+                "password":profile.email,
+                "role":"USER"
+            }
 
-        axios.post("http://localhost:8080/register", payLoad)
+            axios.post("http://localhost:8080/register",payLoad)
             .then((res) => setTurn(1))
             .catch(err => console.log(err))
     }
@@ -55,7 +65,7 @@ function Login() {
     }
 
     return (
-        <div>
+        <div className='root'>
             {turn === 1 &&
                 <>
                     <GoogleLogin
@@ -67,7 +77,7 @@ function Login() {
                         isSignedIn={true}
                     ></GoogleLogin>
                     {flag && <p style={{ color: 'red' }}>Please Signup Email does not exist</p>}
-                    <div>
+                    <div className='signup-btn'>
                         <button onClick={() => setTurn(2)}>Sign Up</button>
                     </div>
 
@@ -83,7 +93,6 @@ function Login() {
                     isSignedIn={true}
                 ></GoogleLogin>
             }
-
         </div>
     );
 }

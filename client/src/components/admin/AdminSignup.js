@@ -11,6 +11,8 @@ const Signup = (props) => {
     const [cfPassword,setCfPassword] = useState(null);
     const [error,setError] = useState(null)
 
+    const encodedToken = window.localStorage.getItem("Token")
+
     const handleSubmit = (e) =>{
         e.preventDefault();
 
@@ -31,11 +33,11 @@ const Signup = (props) => {
         const payLoad = {
             "name" : name,
             "email":email,
-            "password":password,
-            "role":"admin"
+            "password":email,
+            "role":"ADMIN"
         }
 
-        axios.post("http://localhost:8080/register",payLoad)
+        axios.post("http://localhost:8080/register",payLoad,{headers:{Authorization:encodedToken}})
         .then((res) => setTurn(1))
         .catch((err) => console.log(err)) 
     }
@@ -51,14 +53,6 @@ const Signup = (props) => {
                 <div>
                     <label>Email</label>
                     <input type="text" placeholder="Enter email" onChange={(e) => setEmail(e.target.value)}/>
-                </div>
-                <div>
-                    <label>Password</label>
-                    <input type="password" placeholder="Password" onChange={(e) => setPassword(e.target.value)}/>
-                </div>
-                <div>
-                    <label>Confirm Password</label>
-                    <input type="password" placeholder="Confirm Password" onChange={(e) => setCfPassword(e.target.value)}/>
                 </div>
                 <div>
                     {error && <p style={{color:"red"}}>{error}</p>}

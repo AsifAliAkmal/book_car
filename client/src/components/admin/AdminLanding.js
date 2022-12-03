@@ -2,20 +2,22 @@ import { useState } from "react"
 import { Link } from "react-router-dom"
 import AdminSignup from "./AdminSignup"
 
+import "./admin.scss"
+
 const AdminLanding = () => {
     const [turn, setTurn] = useState(1)
     return (
-        <div>
+        <div className="admin">
             {turn === 1 && <>
                 <div>
-                <Link to="/drivers" >Driver DashBoard</Link>
+                <Link to="/drivers" ><button>Driver DashBoard</button></Link>
                 </div>
                 <div>
-                <Link to="/cars">Car DashBoard</Link>
+                <Link to="/cars"><button>Car DashBoard</button></Link>
                 </div>
                 <button onClick={() => setTurn(2)} >Add Admin</button>
                 <div>
-                <button><Link to="/dashboard">Home</Link></button>
+                <Link to="/dashboard"><button>Home</button></Link>
                 </div>
             </>
             }

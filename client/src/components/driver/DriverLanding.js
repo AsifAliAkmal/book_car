@@ -8,19 +8,17 @@ const DriverLanding = () => {
     const [driver,setDriver] = useState([]);
     const [refresh,setRefresh] = useState(false);
 
-
+    const encodedToken = window.localStorage.getItem("Token")
 
     useEffect(() => {
         getAllDrivers();
     },[refresh])
 
     const getAllDrivers = () =>{
-        axios.get("http://localhost:8080/drivers")
+        axios.get("http://localhost:8080/drivers", {headers:{Authorization:encodedToken}})
         .then((res) => {setDriver(res.data)})
         .catch(err => console.log(err))
     }
-
-    
 
     const refreshHandler = ()=>{
         console.log("Hello World")
@@ -29,7 +27,7 @@ const DriverLanding = () => {
 
     return (
         <div>
-            <DisplayDriver drivers={driver} refreshHandler={refreshHandler} />
+            <DisplayDriver drivers={driver} refreshHandler={refreshHandler} encodedToken={encodedToken}/>
             <button>
                 <Link to="/admin">Home</Link>
             </button>

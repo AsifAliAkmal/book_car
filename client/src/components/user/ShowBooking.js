@@ -3,10 +3,10 @@ import axios from "axios";
 
 
 const ShowBooking = (props) => {
-    const {bookings,refreshHandler,setTurn} = props
+    const {bookings,refreshHandler,setTurn,encodedToken} = props
 
     const handleCancleClick = (id) => {
-        axios.put(`http://localhost:8080/cancleBooking/${id}`)
+        axios.put(`http://localhost:8080/cancleBooking/${id}`,{},{headers:{Authorization:encodedToken}})
             .then(res => refreshHandler())
     }
 
